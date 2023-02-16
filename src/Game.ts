@@ -44,6 +44,7 @@ import BallArena from "./Gamemodes/Misc/Ball";
 import MazeArena from "./Gamemodes/Maze";
 import EventArena from "./Gamemodes/Event";
 
+
 /**
  * WriterStream that broadcasts to all of the game's WebSockets.
  */
@@ -88,9 +89,9 @@ const GamemodeToArenaClass: Record<DiepGamemodeID, (typeof ArenaEntity) | null> 
 /**
  * Used for determining which endpoints go to the default.
  */
-const HOSTED_ENDPOINTS: string[] = [];
 
-    export default class GameServer {
+
+export default class GameServer {
     /**
      * Stores total player count.
      */
@@ -181,14 +182,15 @@ const HOSTED_ENDPOINTS: string[] = [];
 
     /** Sets up listeners */
     private listen() {
-        HOSTED_ENDPOINTS.push(this.gamemode);
 
         this._listeners["connection"] = [];
         const onConnect = this._listeners.connection[0] = (ws: WebSocket, request: IncomingMessage) => {
             // shouldHandle takes care of this for us
             const endpoint: DiepGamemodeID = (request.url || "").slice((request.url || "").indexOf("-") + 1) as DiepGamemodeID;
-        
-            if (!(!HOSTED_ENDPOINTS.includes(endpoint)) && this.gamemode !== endpoint) return;
+
+            if (this.gamemode !== endpoint) {
+                return;
+            }
 
             util.log("Incoming client");
             if (this.arena.state !== ArenaState.OPEN) {
@@ -236,8 +238,6 @@ const HOSTED_ENDPOINTS: string[] = [];
     public end() {
         util.saveToLog("Game Instance Ending", "Game running " + this.gamemode + " at `" + this.gamemode + "` is now closing.", 0xEE4132);
         util.log("Ending Game instance");
-        
-        util.removeFast(HOSTED_ENDPOINTS, HOSTED_ENDPOINTS.indexOf(this.gamemode));
 
         clearInterval(this._tickInterval);
 

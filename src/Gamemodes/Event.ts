@@ -158,8 +158,8 @@ export default class EventArena extends ArenaEntity {
 
         new MazeWall(game, 0, -ARENA_SIZE / 2 + BASE_SIZE * 1.5, BASE_SIZE / 2.5, BASE_SIZE * 1.5);
 
-        new MazeWall(game, -ARENA_SIZE / 2 + BASE_SIZE * 1.5, BASE_SIZE * 1.25, BASE_SIZE * 1.5, BASE_SIZE / 2.5);
-        new MazeWall(game, -ARENA_SIZE / 2 + BASE_SIZE * 1.5, -BASE_SIZE * 1.25, BASE_SIZE * 1.5, BASE_SIZE / 2.5);
+        new MazeWall(game, -ARENA_SIZE / 2 + BASE_SIZE * 1.5, BASE_SIZE * 1.4, BASE_SIZE * 1.8, BASE_SIZE / 2.5);
+        new MazeWall(game, -ARENA_SIZE / 2 + BASE_SIZE * 1.5, -BASE_SIZE * 1.4, BASE_SIZE * 1.8, BASE_SIZE / 2.5);
 
         new MazeWall(game, -ARENA_SIZE / 2 + BASE_SIZE * 0.875 - this.ARENA_PADDING, ARENA_SIZE / 2 - BASE_SIZE * 0.875 + this.ARENA_PADDING, BASE_SIZE * 1.75 + this.ARENA_PADDING, BASE_SIZE * 1.75 + this.ARENA_PADDING);
 
@@ -167,8 +167,8 @@ export default class EventArena extends ArenaEntity {
 
         new MazeWall(game, 0, ARENA_SIZE / 2 - BASE_SIZE * 1.5, BASE_SIZE / 2.5, BASE_SIZE * 1.5);
 
-        new MazeWall(game, ARENA_SIZE / 2 - BASE_SIZE * 1.5, BASE_SIZE * 1.25, BASE_SIZE * 1.5, BASE_SIZE / 2.5);
-        new MazeWall(game, ARENA_SIZE / 2 - BASE_SIZE * 1.5, -BASE_SIZE * 1.25, BASE_SIZE * 1.5, BASE_SIZE / 2.5);
+        new MazeWall(game, ARENA_SIZE / 2 - BASE_SIZE * 1.5, BASE_SIZE * 1.4, BASE_SIZE * 1.8, BASE_SIZE / 2.5);
+        new MazeWall(game, ARENA_SIZE / 2 - BASE_SIZE * 1.5, -BASE_SIZE * 1.4, BASE_SIZE * 1.8, BASE_SIZE / 2.5);
 
         new MazeWall(game, ARENA_SIZE / 2 - BASE_SIZE * 0.875 + this.ARENA_PADDING, -ARENA_SIZE / 2 + BASE_SIZE * 0.875 - this.ARENA_PADDING, BASE_SIZE * 1.75 + this.ARENA_PADDING, BASE_SIZE * 1.75 + this.ARENA_PADDING);
 

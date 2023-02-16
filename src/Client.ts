@@ -41,6 +41,7 @@ import { AI, AIState, Inputs } from "./Entity/AI";
 import AbstractBoss from "./Entity/Boss/AbstractBoss";
 import { executeCommand } from "./Const/Commands";
 import LivingEntity from "./Entity/Live";
+import EventArena from "./Gamemodes/Event";
 
 /** XORed onto the tank id in the Tank Upgrade packet. */
 const TANK_XOR = config.magicNum % TankCount;
@@ -447,28 +448,20 @@ export default class Client {
                 // if (this.game.arena.arenaState !== ArenaState.OPEN) return this.terminate();
                 return;
             case ServerBound.TakeTank: {
-                /* AS OF NOVEMBER 9, THE FOLLOWING IS ONLY COMMENTED CODE
-                    // AS OF OCTOBER 18
-                    // This packet now will allow players to switch teams.
-                    // if (Entity.exists(camera.camera.values.player)) this.notify("Someone has already taken that tank", 0x000000, 5000, "cant_claim_info");
-                    const player = camera.camera.values.player;
-                    if (!Entity.exists(player) || !player.relations || !player.style) return;
-
-                    if (player.relations.team === this.game.arena) {
-                        player.relations.team = camera;
-                        player.style.color = Colors.Tank;
-                        this.notify("Team switched to camera");
-                    } else {
-                        player.relations.team = this.game.arena;
-                        player.style.color = Colors.Neutral;
-                        this.notify("Team switched to arena");
-                    }
-                */
-                if (!Entity.exists(camera.cameraData.values.player)) return;
+                if (!Entity.exists(camera.cameraData.player)) return;
+                if(this.game.arena instanceof EventArena) {
+                    if(!camera.cameraData.player.relationsData?.team) return;
+                    const team = camera.cameraData.player.relationsData.team;
+                    if(!team) return;
+                    const nexus = [this.game.arena.blueNexus, this.game.arena.redNexus].find(e => e.relationsData.team === team);
+                    if(!nexus) return;
+                    nexus.sacrifice(this);
+                    return;
+                }
                 if (!this.game.entities.AIs.length) return this.notify("Someone has already taken that tank", 0x000000, 5000, "cant_claim_info");
                 if (!this.inputs.isPossessing) {
-                    const x = camera.cameraData.values.player.positionData?.values.x || 0;
-                    const y = camera.cameraData.values.player.positionData?.values.y || 0;
+                    const x = camera.cameraData.player.positionData?.values.x || 0;
+                    const y = camera.cameraData.player.positionData?.values.y || 0;
                     const AIs = Array.from(this.game.entities.AIs);
                     AIs.sort((a: AI, b: AI) => {
                         const {x: x1, y: y1} = a.owner.getWorldPosition();

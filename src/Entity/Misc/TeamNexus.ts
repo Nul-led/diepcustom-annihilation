@@ -149,7 +149,6 @@ export default class Nexus extends LivingEntity {
 
         if(!isInBase) return client.notify("Unable to sacrifice to the nexus, out of reach.", 0xFFA500, 2000, 'cant_claim_info');
         
-
         this.sacrifices.add(client);
         client.notify("Sacificing started, stay close to the nexus.", 0xFFA500, 2000, 'cant_claim_info');
     }
