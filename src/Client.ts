@@ -102,7 +102,7 @@ export class ClientInputs extends Inputs {
 
 export default class Client {
     /** Set to true if the client socket has been terminated. */
-    private terminated = false;
+    public terminated = false;
     /** The game tick at which the client connected. */
     private connectTick: number;
     /** The last tick that the client received a ping. */
