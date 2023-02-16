@@ -17,7 +17,6 @@
 */
 
 import * as http from "http";
-import * as https from "https";
 import * as fs from "fs";
 import * as WebSocket from "ws";
 import * as config from "./config"
@@ -36,26 +35,14 @@ if (ENABLE_CLIENT) util.log(`Client hosting is enabled and is now being hosted f
 
 const games: GameServer[] = [];
 
-console.log(fs.readFileSync("./ssl/key.pem"));
-console.log(fs.readFileSync("./ssl/origin.cert"));
-
-const server = https.createServer({
-    key: fs.readFileSync("./ssl/key.pem"),
-    cert: fs.readFileSync("./ssl/origin.cert")
-}, (req, res) => {
+const server = http.createServer( (req, res) => {
     util.saveToVLog("Incoming request to " + req.url);
-
-    res.setHeader("Server", "github.com/ABCxFF/diepcustom");
 
     if (ENABLE_API && req.url?.startsWith(`/${config.apiLocation}`)) {
         switch (req.url.slice(config.apiLocation.length + 1)) {
             case "/":
                 res.writeHead(200);
                 return res.end();
-            case "/interactions": // discord interaction
-                if (!auth) return;
-                util.saveToVLog("Authentication attempt");
-                return auth.handleInteraction(req, res);
             case "/tanks":
                 res.writeHead(200);
                 return res.end(JSON.stringify(TankDefinitions));
@@ -121,7 +108,7 @@ wss.shouldHandle = function(request: http.IncomingMessage) {
     return endpointMatch.test(url);
 }
 
-server.listen(443, () => {
+server.listen(PORT, () => {
     util.log(`Listening on port ${PORT}`);
 
     // RULES(0): No two game servers should share the same endpoint
