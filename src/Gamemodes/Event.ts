@@ -47,7 +47,7 @@ class EventShapeManager extends ShapeManager {
     }
 
     protected get wantedShapes() {
-        return 100;
+        return 150;
     }
 
     public tick() {
