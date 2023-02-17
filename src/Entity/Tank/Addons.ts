@@ -284,7 +284,8 @@ class AutoSmasherAddon extends Addon {
         super(owner);
 
         this.createGuard(6, 1.15, 0, .1);
-        new AutoTurret(owner);
+        const turret = new AutoTurret(owner);
+        turret.influencedByOwnerInputs = true;
     }
 }
 /** 5 Auto Turrets */

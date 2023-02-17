@@ -240,7 +240,7 @@ export default class Nexus extends LivingEntity {
             entity.lastDamageTick = tick;
             if(this.healthData.health >= this.healthData.maxHealth) continue;
             this.healthData.health += entity.healthData.maxHealth * entity.damagePerTick / (entity instanceof TankBody ? 20 : 8) * 0.01;
-            entity.healthData.health -= entity.healthData.maxHealth * 0.005;
+            entity.healthData.health -= entity.healthData.maxHealth * 0.005 + entity.regenPerTick;
         }
 
         if(this.lastDamageTick === tick) this.notifyDamage();

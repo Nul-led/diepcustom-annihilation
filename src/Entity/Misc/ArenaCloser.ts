@@ -64,7 +64,7 @@ export default class ArenaCloser extends TankBody {
         this.damagePerTick = 200;
 
         this.nameData.values.name = "Arena Closer";
-        this.styleData.values.color = Color.Neutral;
+        this.styleData.values.color = Color.kMaxColors;
         this.positionData.values.flags |= PositionFlags.canMoveThroughWalls;
         this.physicsData.values.flags |= PhysicsFlags.canEscapeArena;
         camera.cameraData.values.player = this;
