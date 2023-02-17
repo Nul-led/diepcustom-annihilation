@@ -24,6 +24,8 @@ import TankBody from "./Tank/TankBody";
 import { visibilityRateDamage } from "../Const/TankDefinitions";
 import { StyleFlags } from "../Const/Enums";
 import { HealthGroup } from "../Native/FieldGroups";
+import Nexus from "./Misc/TeamNexus";
+import ClientCamera from "../Native/Camera";
 
 /**
  * An Abstract class for all entities with health.
@@ -82,6 +84,7 @@ export default class LivingEntity extends ObjectEntity {
             dF2 *= 1 - ratio;
         }
 
+        
 
         // Plays the animation damage for entity 2
         if (entity2.lastDamageAnimationTick !== game.tick && !(entity2.styleData.values.flags & StyleFlags.hasNoDmgIndicator)) {
@@ -93,6 +96,12 @@ export default class LivingEntity extends ObjectEntity {
             if (entity2.lastDamageTick !== game.tick && entity2 instanceof TankBody && entity2.definition.flags.invisibility && entity2.styleData.values.opacity < visibilityRateDamage) entity2.styleData.opacity += visibilityRateDamage;
             entity2.lastDamageTick = game.tick;
             entity2.healthData.health -= dF1;
+
+            if((entity2 as Nexus).config) {
+                let attacker: ObjectEntity = entity1;
+                while (attacker.relationsData.values.owner instanceof ObjectEntity && attacker.relationsData.values.owner.hash !== 0) attacker = attacker.relationsData.values.owner;
+                if(attacker instanceof TankBody && attacker.cameraEntity instanceof ClientCamera) attacker.cameraEntity.cameraData.score += dF1;
+            }
         }
         
         // Plays the animation damage for entity 1
@@ -105,6 +114,12 @@ export default class LivingEntity extends ObjectEntity {
             if (entity1.lastDamageTick !== game.tick && entity1 instanceof TankBody && entity1.definition.flags.invisibility && entity1.styleData.values.opacity < visibilityRateDamage) entity1.styleData.opacity += visibilityRateDamage;
             entity1.lastDamageTick = game.tick;
             entity1.healthData.health -= dF2;
+
+            if((entity1 as Nexus).config) {
+                let attacker: ObjectEntity = entity2;
+                while (attacker.relationsData.values.owner instanceof ObjectEntity && attacker.relationsData.values.owner.hash !== 0) attacker = attacker.relationsData.values.owner;
+                if(attacker instanceof TankBody && attacker.cameraEntity instanceof ClientCamera) attacker.cameraEntity.cameraData.score += dF2;
+            }
         }
         entity1.damagedEntities.push(entity2)
         entity2.damagedEntities.push(entity1)

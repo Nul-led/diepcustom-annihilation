@@ -151,6 +151,7 @@ export default class EventArena extends ArenaEntity {
     public shapes: EventShapeManager = new EventShapeManager(this);
 
     public invincibilityTimeLeft = tps * 60 * 5;
+    private _timerIsOver = false;
 
     constructor(game: GameServer) {
         super(game);
@@ -252,12 +253,13 @@ export default class EventArena extends ArenaEntity {
         const blueAlive = Entity.exists(this.blueNexus);
         const redAlive = Entity.exists(this.redNexus);
 
-        if(!this.invincibilityTimeLeft && (!blueAlive || !redAlive)) {
+        if(this.invincibilityTimeLeft === 0 && (!blueAlive || !redAlive) && !this._timerIsOver) {
             for(const client of this.game.clients) client.notify("From now on attacking a Nexus deals double the damage!", 0x0000FF, 10000, 'phase_transition');
             this.blueNexus.damageReduction = 2;
             this.blueNexus.shield.damageReduction = 2;
             this.redNexus.damageReduction = 2;
             this.redNexus.shield.damageReduction = 2;
+            this._timerIsOver = true;
         }
 
         if(this.arenaData.flags & ArenaFlags.showsLeaderArrow) this.arenaData.flags ^= ArenaFlags.showsLeaderArrow;
@@ -288,12 +290,12 @@ export default class EventArena extends ArenaEntity {
                     this.arenaData.flags |= ArenaFlags.showsLeaderArrow;
                 }
                 ++playerCount;
-                client.camera.cameraData.score += 450 / client.camera.cameraData.level;
+                if(client.camera.cameraData.level < 45) client.camera.cameraData.score += 450 / client.camera.cameraData.level;
                 client.camera.cameraData.player.styleData.opacity = 1;
             }
             if(!playerCount && this.state === ArenaState.OPEN) {
                 this.close();
-                for(const client of this.game.clients) client.notify("Team BLUE won the game!", ColorsHexCode[Color.TeamBlue], -1);
+                for(const client of this.game.clients) client.notify("Team RED won the game!", ColorsHexCode[Color.TeamRed], -1);
             }
             writeNexusHealth(this.blueNexus, firstPlace);
             writePlayerCount(playerCount, this.redTeam, secondPlace);
@@ -310,12 +312,12 @@ export default class EventArena extends ArenaEntity {
                     this.arenaData.flags |= ArenaFlags.showsLeaderArrow;
                 }
                 ++playerCount;
-                client.camera.cameraData.score += 450 / client.camera.cameraData.level;
+                if(client.camera.cameraData.level < 45) client.camera.cameraData.score += 450 / client.camera.cameraData.level;
                 client.camera.cameraData.player.styleData.opacity = 1;
             }
             if(!playerCount && this.state === ArenaState.OPEN) {
                 this.close();
-                for(const client of this.game.clients) client.notify("Team RED won the game!", ColorsHexCode[Color.TeamRed], -1);
+                for(const client of this.game.clients) client.notify("Team BLUE won the game!", ColorsHexCode[Color.TeamBlue], -1);
             }
             writeNexusHealth(this.redNexus, firstPlace);
             writePlayerCount(playerCount, this.blueTeam, secondPlace);
@@ -333,15 +335,15 @@ export default class EventArena extends ArenaEntity {
                     this.arenaData.leaderY = leader.camera?.cameraData.player?.positionData?.y || 0;
                     this.arenaData.flags |= ArenaFlags.showsLeaderArrow;
                 }
-                client.camera.cameraData.score += 450 / client.camera.cameraData.level;
+                if(client.camera.cameraData.level < 45) client.camera.cameraData.score += 450 / client.camera.cameraData.level;
                 client.camera.cameraData.player.styleData.opacity = 1;
             }
             if((!bluePlayers || !redPlayers) && this.state === ArenaState.OPEN) {
                 this.close();
                 if(!bluePlayers) {
-                    for(const client of this.game.clients) client.notify("Team RED won the game!", ColorsHexCode[Color.TeamRed], -1);
-                } else {
                     for(const client of this.game.clients) client.notify("Team BLUE won the game!", ColorsHexCode[Color.TeamBlue], -1);
+                } else {
+                    for(const client of this.game.clients) client.notify("Team RED won the game!", ColorsHexCode[Color.TeamRed], -1);
                 }
             }
             if(bluePlayers > redPlayers) {
