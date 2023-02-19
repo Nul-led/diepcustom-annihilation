@@ -35,6 +35,11 @@ if (ENABLE_CLIENT) util.log(`Client hosting is enabled and is now being hosted f
 
 const games: GameServer[] = [];
 
+const count = {
+    diepcustom: 0,
+    mohsen: 0
+};
+
 const server = http.createServer( (req, res) => {
     util.saveToVLog("Incoming request to " + req.url);
 
@@ -52,6 +57,9 @@ const server = http.createServer( (req, res) => {
             case "/commands":
                 res.writeHead(200);
                 return res.end(JSON.stringify(config.enableCommands ? Object.values(commandDefinitions) : []));
+            case "/counter":
+                res.writeHead(200);
+                return res.end(JSON.stringify(count));
         }
     }
 
@@ -60,6 +68,12 @@ const server = http.createServer( (req, res) => {
         let contentType = "text/html"
         switch (req.url) {
             case "/":
+                ++count.mohsen;
+                file = config.clientLocation + "/index.html";
+                contentType = "text/html";
+                break;
+            case "/0":
+                ++count.diepcustom;
                 file = config.clientLocation + "/index.html";
                 contentType = "text/html";
                 break;
