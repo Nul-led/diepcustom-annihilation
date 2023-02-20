@@ -22,7 +22,6 @@ import * as WebSocket from "ws";
 import * as config from "./config"
 import * as util from "./util";
 import GameServer from "./Game";
-import * as os from "os";
 import TankDefinitions from "./Const/TankDefinitions";
 import { commandDefinitions } from "./Const/Commands";
 
@@ -133,7 +132,9 @@ interface Analytics {
     tpsRatio: number,
     tick: number,
     uptime: number,
-    usage: NodeJS.ResourceUsage
+    resusage: NodeJS.ResourceUsage,
+    cpuusage: NodeJS.CpuUsage,
+    memusage: NodeJS.MemoryUsage
 }
 
 server.listen(PORT, () => {
@@ -170,7 +171,9 @@ server.listen(PORT, () => {
                 tpsRatio: tps / config.tps, 
                 tick: gameserver.tick,
                 uptime: process.uptime(),
-                usage: process.resourceUsage()
+                resusage: process.resourceUsage(),
+                cpuusage: process.cpuUsage(),
+                memusage: process.memoryUsage()
             })
             fs.writeFileSync("./analytics.json", JSON.stringify(analytics));
         }
