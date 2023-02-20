@@ -158,7 +158,7 @@ server.listen(PORT, () => {
     
     setInterval(() => {
         let tps = gameserver.tick - lastTick;
-        if(tps && tps < config.tps * 0.7) {
+        if(tps && tps < config.tps * 0.8) {
             console.log("critical tps, logging, tps:", tps);
             analytics.push({
                 clients: gameserver.clients.size,
