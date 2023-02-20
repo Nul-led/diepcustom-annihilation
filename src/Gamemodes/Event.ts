@@ -47,7 +47,7 @@ class EventShapeManager extends ShapeManager {
     }
 
     protected get wantedShapes() {
-        return 150;
+        return 10;
     }
 
     public tick() {
@@ -150,7 +150,7 @@ export default class EventArena extends ArenaEntity {
     public playerTeamMap: Map<Client, Nexus> = new Map();
     public shapes: EventShapeManager = new EventShapeManager(this);
 
-    public invincibilityTimeLeft = tps * 60 * 5;
+    public invincibilityTimeLeft = tps * 60;
     private _timerIsOver = false;
 
     constructor(game: GameServer) {
@@ -175,6 +175,8 @@ export default class EventArena extends ArenaEntity {
 
         this.blueNexus.setInvicibility(true);
         this.redNexus.setInvicibility(true);
+
+        this.arenaData.values.flags |= ArenaFlags.canUseCheats;
     }
 
     public spawnPlayer(tank: TankBody, client: Client) {
