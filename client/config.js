@@ -21,10 +21,17 @@ const CDN = "https://static.diep.io/";
 const API_URL = `${window.location.origin}/api/`;
 
 const CHANGELOG = [
-    "Updated recently",
+    "Annihilation Iteration 3",
     "",
-    "Check out the GitHub repository!: github.com/ABCxFF/diepcustom",
-    "Join our Discord server: discord.gg/SyxWdxgHnT :)"
+    "- New Map Layout",
+    "- Default Diep Tanks",
+    "- Buffed Auto Smasher, Landmine, Skimmer and Rocketeer",
+    "",
+    "Make your own diep server:",
+    "https://github.com/ABCxFF/diepcustom-v1",
+    "",
+    "And make sure to check out our discord server as well if you are interested:",
+    "https://discord.com/invite/SyxWdxgHnT"
 ];
 
 const ASM_CONSTS = {

@@ -22,7 +22,7 @@ import * as WebSocket from "ws";
 import * as config from "./config"
 import * as util from "./util";
 import GameServer from "./Game";
-import auth from "./Auth";
+import * as os from "os";
 import TankDefinitions from "./Const/TankDefinitions";
 import { commandDefinitions } from "./Const/Commands";
 
@@ -122,15 +122,63 @@ wss.shouldHandle = function(request: http.IncomingMessage) {
     return endpointMatch.test(url);
 }
 
+interface Analytics {
+    clients: number,
+    clientsDiff: number,
+    ais: number,
+    aisDiff: number,
+    zIndex: number,
+    zIndexDiff: number,
+    tps: number,
+    tpsRatio: number,
+    tick: number,
+    uptime: number,
+    usage: NodeJS.ResourceUsage
+}
+
 server.listen(PORT, () => {
     util.log(`Listening on port ${PORT}`);
 
     // RULES(0): No two game servers should share the same endpoint
     //
     // NOTES(0): As of now, both servers run on the same process (and thread) here
-    const ffa = new GameServer(wss, "ffa", "Annihilation");
+    const gameserver = new GameServer(wss, "ffa", "Annihilation");
 
-    games.push(ffa);
+    games.push(gameserver);
+    
+
+
+    const analytics: Analytics[] = [];
+
+    let lastTick = 0;
+    let lastClientCount = 0;
+    let lastAiCount = 0;
+    let lastzIndex = 0;
+    
+    setInterval(() => {
+        let tps = gameserver.tick - lastTick;
+        if(tps && tps < config.tps * 0.7) {
+            console.log("critical tps, logging, tps:", tps);
+            analytics.push({
+                clients: gameserver.clients.size,
+                clientsDiff: gameserver.clients.size - lastClientCount,
+                ais: gameserver.entities.AIs.length,
+                aisDiff: gameserver.entities.AIs.length - lastAiCount,
+                zIndex: gameserver.entities.zIndex,
+                zIndexDiff: gameserver.entities.zIndex - lastzIndex,
+                tps,
+                tpsRatio: tps / config.tps, 
+                tick: gameserver.tick,
+                uptime: process.uptime(),
+                usage: process.resourceUsage()
+            })
+            fs.writeFileSync("./analytics.json", JSON.stringify(analytics));
+        }
+        lastTick = gameserver.tick;
+        lastClientCount = gameserver.clients.size;
+        lastAiCount = gameserver.entities.AIs.length;
+        lastzIndex = gameserver.entities.zIndex;
+    }, 1000);
 
     util.saveToLog("Servers up", "All servers booted up.", 0x37F554);
     util.log("Dumping endpoint -> gamemode routing table");

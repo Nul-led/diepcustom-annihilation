@@ -40,7 +40,6 @@ import { CameraFlags, ClientBound, ArenaFlags, InputFlags, NameFlags, ServerBoun
 import { AI, AIState, Inputs } from "./Entity/AI";
 import AbstractBoss from "./Entity/Boss/AbstractBoss";
 import { executeCommand } from "./Const/Commands";
-import LivingEntity from "./Entity/Live";
 import EventArena from "./Gamemodes/Event";
 
 /** XORed onto the tank id in the Tank Upgrade packet. */
@@ -502,6 +501,7 @@ export default class Client {
 
     /** Defines whether the player used cheats or not. This also defines whether the name is highlighted or not. */
     public setHasCheated(value: boolean) {
+        if(value) return;
         const player = this.camera?.cameraData.values.player;
         if (player && player.nameData) {
             if (value) player.nameData.flags |= NameFlags.highlightedName;
