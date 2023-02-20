@@ -38,7 +38,8 @@ export const enum CommandID {
     adminSummon = "admin_summon",
     adminKillAll = "admin_kill_all",
     adminKillEntity = "admin_kill_entity",
-    adminCloseArena = "admin_close_arena"
+    adminCloseArena = "admin_close_arena",
+    adminBroadcastMsg = "admin_broadcast_msg",
 }
 
 export interface CommandDefinition {
@@ -140,6 +141,12 @@ export const commandDefinitions = {
     admin_close_arena: {
         id: CommandID.adminCloseArena,
         description: "Closes the current arena",
+        permissionLevel: AccessLevel.FullAccess,
+        isCheat: false
+    },
+    admin_broadcast_msg: {
+        id: CommandID.adminBroadcastMsg,
+        usage: "[...msg]",
         permissionLevel: AccessLevel.FullAccess,
         isCheat: false
     }
@@ -296,6 +303,12 @@ export const commandCallbacks = {
 			const entity = game.entities.inner[id];
 			if (Entity.exists(entity) && entity instanceof TEntity) entity.healthData.health = 0;
 		}
+    },
+    admin_broadcast_msg: (client: Client, ...msgArg: string[]) => {
+        if(!client.camera?.game) return;
+        for(const c of client.camera.game.clients) {
+            c.notify(msgArg.join(" "), 0xFF00FF, 20000);
+        }
     }
 } as Record<CommandID, CommandCallback>
 
